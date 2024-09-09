@@ -1,6 +1,7 @@
 package com.tdd.calculator;
 
 import java.util.List;
+import static com.tdd.constant.Constants.NEGATIVE_NUMS_NOT_ALLOWED;
 
 public class StringCalculator {
     public int add(String numbers) {
@@ -13,9 +14,19 @@ public class StringCalculator {
             numbers = numbers.replace("\n", ",");
         }
         List<String> numsList = List.of(numbers.split(","));
+        StringBuilder negativeNums= new StringBuilder();
+
         int sum = 0;
         for (String num : numsList) {
-            sum += Integer.parseInt(num);
+            int number= Integer.parseInt(num);
+            if (number<0) {
+                if (!negativeNums.isEmpty()) negativeNums.append(",");
+                negativeNums.append(num);
+            }
+            else sum += number;
+        }
+        if (!negativeNums.isEmpty()) {
+            throw new IllegalArgumentException(NEGATIVE_NUMS_NOT_ALLOWED + negativeNums);
         }
         return sum;
     }
