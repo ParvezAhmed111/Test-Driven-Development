@@ -27,7 +27,7 @@ public class StringCalculator {
                 if (!negativeNums.isEmpty()) negativeNums.append(",");
                 negativeNums.append(num);
             }
-            else sum += number;
+            else if (number<=1000) sum += number;
         }
         if (!negativeNums.isEmpty()) {
             throw new IllegalArgumentException(NEGATIVE_NUMS_NOT_ALLOWED + negativeNums);
