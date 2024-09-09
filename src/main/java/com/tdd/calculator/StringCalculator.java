@@ -4,7 +4,11 @@ import java.util.List;
 import static com.tdd.constant.Constants.NEGATIVE_NUMS_NOT_ALLOWED;
 
 public class StringCalculator {
+
+    private int calledCount = 0;
+
     public int add(String numbers) {
+        calledCount++;
         if (numbers.isEmpty()) {
             return 0;
         }
@@ -39,4 +43,7 @@ public class StringCalculator {
         return numbers;
     }
 
+    public int getCalledCount() {
+        return calledCount;
+    }
 }
