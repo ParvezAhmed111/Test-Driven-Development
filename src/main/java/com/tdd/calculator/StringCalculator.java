@@ -7,13 +7,25 @@ public class StringCalculator {
         if (numbers.isEmpty()) {
             return 0;
         }
-        numbers = numbers.replace("\n", ",");
+        if (numbers.startsWith("//")) {
+            numbers = handleDifferentDelimiters(numbers);
+        } else {
+            numbers = numbers.replace("\n", ",");
+        }
         List<String> numsList = List.of(numbers.split(","));
         int sum = 0;
         for (String num : numsList) {
             sum += Integer.parseInt(num);
         }
         return sum;
+    }
+
+    private static String handleDifferentDelimiters(String numbers) {
+        int index = numbers.indexOf('\n');
+        String delimiter = numbers.substring(2, index);
+        numbers = numbers.substring(index + 1);
+        numbers = numbers.replace(delimiter, ",");
+        return numbers;
     }
 
 }
