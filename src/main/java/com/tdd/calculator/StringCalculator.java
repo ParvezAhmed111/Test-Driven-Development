@@ -37,9 +37,16 @@ public class StringCalculator {
 
     private static String handleDifferentDelimiters(String numbers) {
         int index = numbers.indexOf('\n');
-        String delimiter = numbers.substring(2, index);
-        numbers = numbers.substring(index + 1);
-        numbers = numbers.replace(delimiter, ",");
+        String delimiterPart = numbers.substring(2, index);
+        if (delimiterPart.startsWith("[")) {
+            String delimiter = delimiterPart.substring(1, delimiterPart.indexOf(']'));
+            numbers = numbers.substring(index + 1);
+            numbers = numbers.replace(delimiter, ",");
+        }
+        else {
+            numbers = numbers.substring(index + 1);
+            numbers = numbers.replace(delimiterPart, ",");
+        }
         return numbers;
     }
 
