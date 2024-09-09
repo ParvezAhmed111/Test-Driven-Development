@@ -7,6 +7,7 @@ public class StringCalculator {
         if (numbers.isEmpty()) {
             return 0;
         }
+        numbers = numbers.replace("\n", ",");
         List<String> numsList = List.of(numbers.split(","));
         int sum = 0;
         for (String num : numsList) {
