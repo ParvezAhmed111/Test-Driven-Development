@@ -1,6 +1,9 @@
 package com.tdd.calculator;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+
 import static com.tdd.constant.Constants.NEGATIVE_NUMS_NOT_ALLOWED;
 
 public class StringCalculator {
@@ -38,16 +41,43 @@ public class StringCalculator {
     private static String handleDifferentDelimiters(String numbers) {
         int index = numbers.indexOf('\n');
         String delimiterPart = numbers.substring(2, index);
-        if (delimiterPart.startsWith("[")) {
-            String delimiter = delimiterPart.substring(1, delimiterPart.indexOf(']'));
-            numbers = numbers.substring(index + 1);
+        numbers = numbers.substring(index + 1);
+        List<String> delimiters = extractDelimiters(delimiterPart);
+        for (String delimiter : delimiters) {
             numbers = numbers.replace(delimiter, ",");
         }
-        else {
-            numbers = numbers.substring(index + 1);
-            numbers = numbers.replace(delimiterPart, ",");
-        }
         return numbers;
+    }
+
+    private static List<String> extractDelimiters(String delimiterPart) {
+        List<String> delimiters = new ArrayList<>();
+        Stack<Character> stack = new Stack<>();
+        StringBuilder currentDelimiter = new StringBuilder();
+        if(delimiterPart.startsWith("[") && delimiterPart.contains("]")) {
+            extractDelimitersWrappedInBrackets(delimiterPart, stack, delimiters, currentDelimiter);
+        }
+        else {
+            delimiters.add(delimiterPart);
+        }
+        return delimiters;
+    }
+
+    private static void extractDelimitersWrappedInBrackets(String delimiterPart, Stack<Character> stack, List<String> delimiters, StringBuilder currentDelimiter) {
+        for(char c : delimiterPart.toCharArray()) {
+            if(c=='[') {
+                stack.push(c);
+            } else if (c==']') {
+                if(!stack.isEmpty()) {
+                    stack.pop();
+                    delimiters.add(currentDelimiter.toString());
+                    currentDelimiter.setLength(0);
+                }
+            } else {
+                if (!stack.isEmpty()) {
+                    currentDelimiter.append(c);
+                }
+            }
+        }
     }
 
     public int getCalledCount() {
