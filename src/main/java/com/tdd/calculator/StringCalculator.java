@@ -12,9 +12,7 @@ public class StringCalculator {
 
     public int add(String numbers) {
         calledCount++;
-        if (numbers.isEmpty()) {
-            return 0;
-        }
+        if (numbers.isEmpty()) return 0;
         if (numbers.startsWith("//")) {
             numbers = handleDifferentDelimiters(numbers);
         } else {
@@ -24,6 +22,14 @@ public class StringCalculator {
         StringBuilder negativeNums= new StringBuilder();
 
         int sum = 0;
+        sum = calculateSum(numsList, negativeNums, sum);
+        if (!negativeNums.isEmpty()) {
+            throw new IllegalArgumentException(NEGATIVE_NUMS_NOT_ALLOWED + negativeNums);
+        }
+        return sum;
+    }
+
+    private static int calculateSum(List<String> numsList, StringBuilder negativeNums, int sum) {
         for (String num : numsList) {
             int number= Integer.parseInt(num);
             if (number<0) {
@@ -32,9 +38,6 @@ public class StringCalculator {
             }
             else if (number<=1000) sum += number;
         }
-        if (!negativeNums.isEmpty()) {
-            throw new IllegalArgumentException(NEGATIVE_NUMS_NOT_ALLOWED + negativeNums);
-        }
         return sum;
     }
 
@@ -42,8 +45,10 @@ public class StringCalculator {
         int index = numbers.indexOf('\n');
         String delimiterPart = numbers.substring(2, index);
         numbers = numbers.substring(index + 1);
-        List<String> delimiters = extractDelimiters(delimiterPart);
-        for (String delimiter : delimiters) {
+
+        // extracted all the unique delimiters and stored in list
+        List<String> delimitersList = extractDelimiters(delimiterPart);
+        for (String delimiter : delimitersList) {
             numbers = numbers.replace(delimiter, ",");
         }
         return numbers;
@@ -54,11 +59,10 @@ public class StringCalculator {
         Stack<Character> stack = new Stack<>();
         StringBuilder currentDelimiter = new StringBuilder();
         if(delimiterPart.startsWith("[") && delimiterPart.contains("]")) {
+            // case 1: if delimiter is wrapped in brackets (i.e., [***])
             extractDelimitersWrappedInBrackets(delimiterPart, stack, delimiters, currentDelimiter);
         }
-        else {
-            delimiters.add(delimiterPart);
-        }
+        else delimiters.add(delimiterPart); // case 2: if delimiter is not wrapped in brackets (i.e. //;\n)
         return delimiters;
     }
 
@@ -66,16 +70,12 @@ public class StringCalculator {
         for(char c : delimiterPart.toCharArray()) {
             if(c=='[') {
                 stack.push(c);
-            } else if (c==']') {
-                if(!stack.isEmpty()) {
+            } else if (c==']' && !stack.isEmpty()) {
                     stack.pop();
                     delimiters.add(currentDelimiter.toString());
                     currentDelimiter.setLength(0);
-                }
-            } else {
-                if (!stack.isEmpty()) {
+            } else if(!stack.isEmpty()){
                     currentDelimiter.append(c);
-                }
             }
         }
     }
